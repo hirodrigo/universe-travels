@@ -1,8 +1,25 @@
 version: '3'
 services:
+  postgres:
+    image: 'postgres:alpine'
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: universe-travels
+
   universe-travels:
     build:
       dockerfile: Dockerfile
       context: ./
     ports:
       - 3000:3000
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres:5432/universe-travels
+volumes:
+  postgres-volume:
